@@ -5,27 +5,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Calculator</h1>
     <div class="calculator-container">
 
         <div id="display-container">
-            <input type="text" id="calculator-display"/>
+            <input type="text" id="calculator-display" placeholder="0"/>
         </div>
 
         <div id="keypad-container">
 
-            <button class="calc-button">0</button>
-            <button class="calc-button">1</button>
-            <button class="calc-button">2</button>
-            <button class="calc-button">3</button>
-            <button class="calc-button">4</button>
-            <button class="calc-button">5</button>
-            <button class="calc-button">6</button>
-            <button class="calc-button">7</button>
-            <button class="calc-button">8</button>
-            <button class="calc-button">9</button>
+            <button class="num-button">0</button>
+            <button class="num-button">1</button>
+            <button class="num-button">2</button>
+            <button class="num-button">3</button>
+            <button class="num-button">4</button>
+            <button class="num-button">5</button>
+            <button class="num-button">6</button>
+            <button class="num-button">7</button>
+            <button class="num-button">8</button>
+            <button class="num-button">9</button>
             
         </div>
         <div id="operators-container">
@@ -34,7 +35,8 @@
             <button class="oper-button">-</button>
             <button class="oper-button">&times;</button>
             <button class="oper-button">&divide;</button>
-            <button class="oper-button">=</button>
+            <button id="equal-button">=</button>
+            <button id="clear-button">CLR</button>
         </div>
 
 
