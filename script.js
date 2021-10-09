@@ -51,11 +51,47 @@ function operate(num1, operator, num2){
 
 }
 
-console.log(subtract((add(9, (multiply((divide(18, 12)), 81)))), 7));
+/*console.log(subtract((add(9, (multiply((divide(18, 12)), 81)))), 7));
 console.log(divide(9, 0));
 console.log(add(5, 6));
 
 console.log(operate(4, '+', 2));
 console.log(operate(3, '/', 6));
 console.log(operate(9, '*', 9));
-console.log(operate(15, '/', 0));
+console.log(operate(15, '/', 0));*/
+
+
+const operatorButtons= document.querySelectorAll('.oper-button');
+const numButtons= document.querySelectorAll('.num-button');
+const calcDisplay= document.querySelector('#calculator-display');
+const clearButton= document.querySelector('#clear-button');
+const equalButton= document.querySelector('#equal-button');
+
+let displayValue="";
+
+operatorButtons.forEach((btn)=>{
+    btn.addEventListener('click', ()=>{
+        calcDisplay.value+=btn.textContent;
+
+    });
+
+});
+
+numButtons.forEach((btn)=>{
+    btn.addEventListener('click', ()=>{
+        calcDisplay.value+=btn.textContent;
+
+    });
+
+});
+
+clearButton.addEventListener('click', ()=>{
+    calcDisplay.value="";
+
+});
+
+equalButton.addEventListener('click', ()=>{
+    displayValue= calcDisplay.value;
+    console.log(displayValue);
+
+});
