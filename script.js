@@ -63,34 +63,43 @@ function operate(num1, operator, num2){
 
 const operatorButtons= document.querySelectorAll('.oper-button');
 const numButtons= document.querySelectorAll('.num-button');
+const displayButtons= document.querySelectorAll('.disp-button');
 const calcDisplay= document.querySelector('#calculator-display');
 const clearButton= document.querySelector('#clear-button');
 const equalButton= document.querySelector('#equal-button');
 const divideButton= document.querySelector('#divide-button');
 const multiplyButton= document.querySelector('#multiply-button');
 
-let displayValue="";
-let displayValArray=[];
 const divSymbol=divideButton.textContent;
 const multSymbol=multiplyButton.textContent;
 
 
-//   For the following two forEach methods:
+
+//   For the following function:
 //   When any of the calculator buttons (numbers and arithmeric operations) 
-//   are clicked, it will be shown on the display
+//   are clicked, it will be shown on the display where the cursor is located
 
-operatorButtons.forEach((btn)=>{
+function displayNumAndOper(bn){
+
+
+    
+    calcDisplay.focus();
+    const curPos= calcDisplay.selectionStart;
+    const displText= calcDisplay.value;  
+    const newText= displText.slice(0,curPos) + bn.textContent +displText.slice(curPos); 
+    calcDisplay.value=newText;
+    calcDisplay.selectionStart=curPos+1;
+    calcDisplay.selectionEnd=curPos+1;   
+    
+}
+
+
+
+displayButtons.forEach((btn)=>{
     btn.addEventListener('click', ()=>{
-        calcDisplay.value+=btn.textContent;    
+       
+        displayNumAndOper(btn);
 
-    });                                     
-
-
-});         
-
-numButtons.forEach((btn)=>{
-    btn.addEventListener('click', ()=>{
-        calcDisplay.value+=btn.textContent;
 
     });
 
@@ -114,15 +123,21 @@ function calcDivideMultiply(arr){ //preferred function
     
     const dispSymbol= arr.find(item=> (item===divSymbol || item===multSymbol));
 
-    (dispSymbol===divSymbol) ?  symbol= '/' : symbol= '*';
-    const result=operate(arr[index-1], symbol, arr[index+1]);
+    (dispSymbol===divSymbol) ?  symbol= '/' : symbol= '*';  // Substitutes the division symbol displayed
+                                                            // with the slash '/' and the multplication
+                                                            // symbol with the asterick '*', since those 
+                                                            // symbols are used by the operate function  
+    
+    
+    
+    const result=operate(arr[index-1], symbol, arr[index+1]);  
 
     const newArray=[
                     ...arr.slice(0, index-1),
                     result,
                     ...arr.slice([index+2])
                 ];
-    return anotherdivMultCalc(newArray);
+    return calcDivideMultiply(newArray);
     
 }
 
@@ -142,31 +157,35 @@ function calcAddSubtract(arr){ //preferred function
         result,
         ...arr.slice([index+2])
      ];
-     return anotherAddSubtCalc(newArray);
+     return calcAddSubtract(newArray);
 
 
 }
 
 
 equalButton.addEventListener('click', ()=>{
-    displayValue= calcDisplay.value;
-    console.log(displayValue);
-    displayValArray= displayValue.split(/(\D)/);
-    console.log(displayValArray);
-    /*console.log(divSymbol);
-    console.log(multSymbol);*/
-
-
+    const displayValue= calcDisplay.value;
+    const displayValArray= displayValue.split(/(\D)/);
+    
     try{
-    const arrayNext= anotherdivMultCalc(displayValArray);
+    const arrayAfterDivMult= calcDivideMultiply(displayValArray);
     //console.log(arrayNext);
-    console.log(anotherAddSubtCalc(arrayNext));
+    //console.log(calcAddSubtract(arrayAfterDivMult));
+    const finalAnswer=calcAddSubtract(arrayAfterDivMult);
+    calcDisplay.value+=`   ${finalAnswer}`;
+    
+   
+    
 
     }catch(error){
-        console.log(error);
+        calcDisplay.value="";
+        calcDisplay.value=error;
+        //console.log(error);
 
 
     }  
 
 });
+
+
 
