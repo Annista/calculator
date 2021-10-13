@@ -72,6 +72,7 @@ const multiplyButton= document.querySelector('#multiply-button');
 
 const divSymbol=divideButton.textContent;
 const multSymbol=multiplyButton.textContent;
+let finalAnswer=0;
 
 
 
@@ -85,11 +86,19 @@ function displayNumAndOper(bn){
     
     calcDisplay.focus();
     const curPos= calcDisplay.selectionStart;
+   /*if((document.activeElement!==calcDisplay) && (typeof finalAnswer!== 'undefined')){
+        calcDisplay.value=" ";
+    }*/
     const displText= calcDisplay.value;  
     const newText= displText.slice(0,curPos) + bn.textContent +displText.slice(curPos); 
     calcDisplay.value=newText;
     calcDisplay.selectionStart=curPos+1;
-    calcDisplay.selectionEnd=curPos+1;   
+    calcDisplay.selectionEnd=curPos+1;  
+
+    console.log(typeof finalAnswer);
+    console.log(document.activeElement!==calcDisplay);
+    
+   
     
 }
 
@@ -112,6 +121,36 @@ clearButton.addEventListener('click', ()=>{
     calcDisplay.value="";
 
 });
+
+//to ensure that the only keys displayed on the calculator are numbers and arithmetic signs
+calcDisplay.addEventListener('keydown', function(event) {
+  
+    if(!(/[0-9]/g.test(event.key) || /[\-+]/g.test(event.key) || event.key==='Backspace' 
+                || event.key==='Delete' || event.key==='ArrowLeft' || event.key==='ArrowRight' ) ){
+
+       event.preventDefault();
+       
+    } 
+
+    if(event.key==='/'){
+        displayNumAndOper(divideButton);    // when the slash on the keyboard is pressed, the division sign is displayed 
+    }
+
+    if(event.key==='*'){
+        displayNumAndOper(multiplyButton);   // when the asterick on the keyboard is pressed, the multiplication sign is displayed 
+    }
+
+    if(event.key==='Enter'){
+        getAnswer();                        // when the enter key on the keyboard is pressed, 
+                                            // the answer of the expression is found and displayed
+    }                       
+
+
+
+
+    console.log(event.key);
+   
+  });
 
 
 function calcDivideMultiply(arr){ //preferred function
@@ -162,16 +201,16 @@ function calcAddSubtract(arr){ //preferred function
 
 }
 
-
-equalButton.addEventListener('click', ()=>{
+function getAnswer(){
     const displayValue= calcDisplay.value;
     const displayValArray= displayValue.split(/(\D)/);
+    
     
     try{
     const arrayAfterDivMult= calcDivideMultiply(displayValArray);
     //console.log(arrayNext);
     //console.log(calcAddSubtract(arrayAfterDivMult));
-    const finalAnswer=calcAddSubtract(arrayAfterDivMult);
+    finalAnswer=calcAddSubtract(arrayAfterDivMult);
     calcDisplay.value+=`   ${finalAnswer}`;
     
    
@@ -183,7 +222,18 @@ equalButton.addEventListener('click', ()=>{
         //console.log(error);
 
 
-    }  
+    } 
+
+    console.log( finalAnswer);
+    console.log(document.activeElement!==calcDisplay);
+   
+}
+
+
+equalButton.addEventListener('click', ()=>{
+    getAnswer();
+     
+
 
 });
 
