@@ -12,6 +12,9 @@ const multiplyButton= document.querySelector('#multiply-button');
 const divSymbol=divideButton.textContent;
 const multSymbol=multiplyButton.textContent;
 
+const regexString= `([${divSymbol}${multSymbol}\/\*+\-])`;
+const symbRegex=new RegExp(regexString, "g");
+
 //Each of the following four functions perform a basic arithmetic operation for the calculator
 
 function add(...arr){
@@ -78,6 +81,7 @@ function operate(num1, operator, num2){
 
 function getAnswer(arr){
 
+
     let symbol="";
     
     if(arr[1]===divSymbol){
@@ -108,54 +112,103 @@ function getAnswer(arr){
 
 }
 
+
+
+//When the calculator display string ends in a symbol, a whitespace is put after it
+//when it is split into an array. The function below was created to remove these whitespaces
+
+function removeWhitespaces(arr){
+
+
+    const emptyIndex=arr.findIndex((item)=>{
+        return item==='';
+    });
+
+    if(emptyIndex===-1){
+        return arr;
+    }
+
+    const newArr=[
+            ... arr.slice(0, emptyIndex),
+            ... arr.slice(emptyIndex+1)
+        ];
+
+    return removeWhitespaces(newArr);    
+
+    }
+  
+
+   
+
+
+
+
+
+
 //This function collects the expression in the calculator for solving
 
 function getExpressionInDisplay(){
 
-    let displayValue= calcDisplay.value;
-    let exprArray= displayValue.split(/([^0-9\.])/);
-        
-        
+    let displayValue=`${calcDisplay.value}`;
+   
+
+    let exprArray=displayValue.split(symbRegex);
        
-        console.log(displayValue);
-        console.log(exprArray);
+        //console.log(displayValue);
+        //console.log(exprArray);
+       
 
-        const emptyIndex=exprArray.findIndex((item)=>{
-            return item==='';
-        });
+        const updExprArray=removeWhitespaces(exprArray);
+        //console.log(updExprArray);
 
-        console.log(emptyIndex);
+        
 
-        if (emptyIndex>=0){
-            exprArray=[
-                ...exprArray.slice(0, emptyIndex),
-                ...exprArray.slice(emptyIndex+1)
-            ];
-        }
 
-        console.log(exprArray);
-        return exprArray;
+       
+        return updExprArray;
 
 
 }
 
 displayButtons.forEach((btn)=>{
     btn.addEventListener('click', ()=>{
+        
        
         calcDisplay.value+=btn.textContent;
         let nextSymbol="";
 
-        displayValArray=getExpressionInDisplay();
+
+        console.log(calcDisplay.value);
+        const displayValArray=getExpressionInDisplay();
+        console.log(displayValArray);
 
         
+  
+    if(displayValArray.length===4){
+        try{
 
-       if(displayValArray.length===4){
-           nextSymbol=displayValArray[3];
-            const displayAnswer=getAnswer(displayValArray);
-            calcDisplay.value=displayAnswer+nextSymbol;
-          
+           if(displayValArray[2]==='+' || displayValArray[2]==='-' || displayValArray[2]===divSymbol 
+                        || displayValArray[2]===multSymbol){
+                
+                throw 'Syntax Error';
+               
+            }
+
+            
+    
+            nextSymbol=displayValArray[3];
+             const displayAnswer=getAnswer(displayValArray);
+             calcDisplay.value=displayAnswer+nextSymbol;
+           
+
+        }catch(error){
+            calcDisplay.value=error;
+        }
+        
+    
+ }
+
        
-    }
 
    
 
@@ -174,7 +227,34 @@ clearButton.addEventListener('click', ()=>{
 });
 
 equalButton.addEventListener('click', ()=>{
-    calcDisplay.value=getAnswer(getExpressionInDisplay());
+
+    const finalExpression=getExpressionInDisplay();
+    console.log(finalExpression[finalExpression.length-1]);
+
+   
+
+    try{
+
+        
+
+            
+     if(finalExpression[finalExpression.length-1]==='+' || finalExpression[finalExpression.length-1]==='-'
+                || finalExpression[finalExpression.length-1]===divSymbol 
+                     || finalExpression[finalExpression.length-1]===multSymbol){
+
+            throw 'Syntax Error';
+
+         }
+            calcDisplay.value=getAnswer(finalExpression);
+
+       
+
+        
+
+    }catch(error){
+        calcDisplay.value=error;
+    }
+  
     
      
 
