@@ -4,6 +4,8 @@ const operatorButtons= document.querySelectorAll('.oper-button');
 const numButtons= document.querySelectorAll('.num-button');
 const displayButtons= document.querySelectorAll('.disp-button');
 const calcDisplay= document.querySelector('#calculator-display');
+const exprDisplay=document.querySelector('#expr-display');
+const answerDisplay=document.querySelector('#answer-display');
 const clearButton= document.querySelector('#clear-button');
 const equalButton= document.querySelector('#equal-button');
 const divideButton= document.querySelector('#divide-button');
@@ -14,6 +16,8 @@ const multSymbol=multiplyButton.textContent;
 
 const regexString= `([${divSymbol}${multSymbol}\/\*+\-])`;
 const symbRegex=new RegExp(regexString, "g");
+
+let hasOperationEnded;    //flag to tell the program that the current operation has ended, so it can start over
 
 //Each of the following four functions perform a basic arithmetic operation for the calculator
 
@@ -149,7 +153,8 @@ function removeWhitespaces(arr){
 
 function getExpressionInDisplay(){
 
-    let displayValue=`${calcDisplay.value}`;
+
+    let displayValue=`${exprDisplay.textContent}`;
    
 
     let exprArray=displayValue.split(symbRegex);
@@ -172,13 +177,19 @@ function getExpressionInDisplay(){
 
 displayButtons.forEach((btn)=>{
     btn.addEventListener('click', ()=>{
+
+    if(hasOperationEnded===true){
+        exprDisplay.textContent="";
+        answerDisplay.textContent="";
+        hasOperationEnded=false;
+    }
         
        
-        calcDisplay.value+=btn.textContent;
+        exprDisplay.textContent+=btn.textContent;
         let nextSymbol="";
 
 
-        console.log(calcDisplay.value);
+        console.log(exprDisplay.textContent);
         const displayValArray=getExpressionInDisplay();
         console.log(displayValArray);
 
@@ -198,11 +209,13 @@ displayButtons.forEach((btn)=>{
     
             nextSymbol=displayValArray[3];
              const displayAnswer=getAnswer(displayValArray);
-             calcDisplay.value=displayAnswer+nextSymbol;
+             answerDisplay.textContent=displayAnswer;
+             exprDisplay.textContent=displayAnswer+nextSymbol;
            
 
         }catch(error){
-            calcDisplay.value=error;
+            answerDisplay.textContent=error;
+            hasOperationEnded=true;
         }
         
     
@@ -222,9 +235,13 @@ displayButtons.forEach((btn)=>{
 //To clear the display of the calculator
 
 clearButton.addEventListener('click', ()=>{
-    calcDisplay.value="";
+    exprDisplay.textContent="";
+    answerDisplay.textContent="";
 
 });
+
+//When the button equalButton is clicked,  the calculator display
+// will show the solution of the expression immediately 
 
 equalButton.addEventListener('click', ()=>{
 
@@ -237,7 +254,7 @@ equalButton.addEventListener('click', ()=>{
 
         
 
-            
+     //if the last item in the expression is a sign, a syntax error message will be displayed       
      if(finalExpression[finalExpression.length-1]==='+' || finalExpression[finalExpression.length-1]==='-'
                 || finalExpression[finalExpression.length-1]===divSymbol 
                      || finalExpression[finalExpression.length-1]===multSymbol){
@@ -245,14 +262,15 @@ equalButton.addEventListener('click', ()=>{
             throw 'Syntax Error';
 
          }
-            calcDisplay.value=getAnswer(finalExpression);
-
+            answerDisplay.textContent=getAnswer(finalExpression);
+            hasOperationEnded=true;
        
 
         
 
     }catch(error){
-        calcDisplay.value=error;
+        answerDisplay.textContent=error;
+        hasOperationEnded=true;
     }
   
     
