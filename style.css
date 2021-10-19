@@ -1,2 +1,109 @@
+*{
+    box-sizing: border-box;
+}
+
+.calculator-container{
+    background: darkseagreen;
+    /*padding: 10px;*/
+    width: 30vw;
+   /* height: 500px;*/
+   aspect-ratio: 3/4;
+    margin: 0 auto;
+}
+
+@media (max-width:299px ) {
+    .calculator-container{
+        width: 95vw;
+    }
+    
+}
+
+@media (min-width:300px ) and (max-width: 800px) {
+    .calculator-container{
+        width: 50vw;
+    }
+    
+}
+
+@media (min-width: 801px) and (max-width: 1030px){
+    .calculator-container{
+        width: 40vw;
+    }
+}
+
+
+
+#display-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    background: cornflowerblue;
+    width: 90%;
+    height: 30%;
+    margin: inherit;
+   
+}
+
+#calculator-display{
+    display: flex;
+    flex-direction: column;
+
+    justify-content: space-between;
+    
+   background: darkgray;
+   width: inherit;
+   height: 80%;
+}
+
+#expr-display{
+    
+    background: lawngreen;
+    
+  
+   
+    
+}
+
+#answer-display{
+    
+   background: lightpink;
+   text-align: right;
+}
+
+#keypad-container{
+    display: flex;
+    justify-content: space-evenly;
+    background: khaki;
+    width: 90%;
+    height: 60%;
+    margin: 10px auto;
+    /*padding: 10px;*/
+}
+
+#numpad-container{
+    display: grid;
+    grid-template-columns: 32.67% 32.67% 32.67%;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 1%;
+    
+    background: royalblue;
+   width: 50%;
+    height: 100%;
+
+}
+
+#operators-container{
+    display: grid;
+    grid-template-columns: 49.5% 49.5% ;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 1%;
+    width: 33.33%;
+     height: 75%;
+     background: salmon;
+ 
+
+
+}
 
 
