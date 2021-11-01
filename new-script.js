@@ -10,6 +10,8 @@ const clearButton= document.querySelector('#clear-button');
 const equalButton= document.querySelector('#equal-button');
 const divideButton= document.querySelector('#divide-button');
 const multiplyButton= document.querySelector('#multiply-button');
+const decimalButton=document.querySelector('#decimal-button');
+const backspaceButton=document.querySelector('#backspace-button');
 
 const divSymbol=divideButton.textContent;
 const multSymbol=multiplyButton.textContent;
@@ -38,7 +40,7 @@ function multiply(...arr){
 function divide(...arr){
     const result = arr.reduce((prev, curr)=> prev/curr);
         
-        if(result===Infinity){                                     //  the result would be Infinity if 
+        if(result===Infinity || result===-Infinity){                                     //  the result would be Infinity if 
             throw 'MATH Error: Number cannot be divided by zero';  // a number(execpt 0) is divided by 0
         }else{
             if (isNaN(result)){                         //  the result would be NaN 
@@ -105,12 +107,16 @@ function getAnswer(arr){
     }
 
     if(arr.length===1) {
-        return arr[0];
+        
+        return +(Math.round(arr[0] + "e+2")  + "e-2");
     }
 
-    return operate(arr[0], symbol, arr[2]);
-    
-    //console.log(answer);
+    const answer= operate(arr[0], symbol, arr[2]) ;
+   
+
+    //return Math.round((answer + Number.EPSILON) * 100) / 100;
+    return +(Math.round(answer + "e+2")  + "e-2");
+   
 
 
 
@@ -140,6 +146,46 @@ function removeWhitespaces(arr){
     return removeWhitespaces(newArr);    
 
     }
+
+  //tests whether or not the second number in the expression is a negative number
+    function findNegativeNumber(arr){
+        
+        
+      
+      const itemTest=arr[2];
+      const itemBefore=arr[1];
+      const itemAfter=arr[3];
+      let newArr=arr;
+
+      
+     
+
+      if(itemTest==='-' && !Number.isFinite(parseFloat(itemBefore)) 
+                                && Number.isFinite(parseFloat(itemAfter))){
+
+        if(arr.length<=4){
+            newArr=[
+                ...arr.slice(0, 2),
+                (0-arr[3]).toString()
+            ];
+
+
+        }else{
+            newArr=[
+                ...arr.slice(0, 2),
+                (0-arr[3]).toString(),
+                ...arr.slice(4)
+            ];
+
+        }
+      }
+      console.log(newArr);
+
+      return newArr;
+     
+
+
+    }
   
 
    
@@ -154,49 +200,111 @@ function removeWhitespaces(arr){
 function getExpressionInDisplay(){
 
 
-    let displayValue=`${exprDisplay.textContent}`;
+    let displayValue=`${exprDisplay.value}`;
+   
    
 
     let exprArray=displayValue.split(symbRegex);
        
         //console.log(displayValue);
-        //console.log(exprArray);
+        console.log(exprArray);
+
+       
        
 
-        const updExprArray=removeWhitespaces(exprArray);
-        //console.log(updExprArray);
+        let updExprArray=removeWhitespaces(exprArray);
+        console.log(updExprArray);
+
+        if (updExprArray[0]==='+'){
+            updExprArray=[
+                   (0+parseFloat(updExprArray[1])).toString(),
+                   ...updExprArray.slice(2)
+               ];
+            }
+   
 
         
 
+        if (updExprArray[0]==='-'){
+            updExprArray=[
+                   (0-updExprArray[1]).toString(),
+                   ...updExprArray.slice(2)
+               ];
+   
+             
+           }
+           console.log(updExprArray);
 
+         const newUpdExprArray=findNegativeNumber(updExprArray);
+         console.log(newUpdExprArray);
        
-        return updExprArray;
+        return newUpdExprArray;
+}
+
+function clearCalculator(){
+    exprDisplay.value="";
+    answerDisplay.textContent="";
+
+}
+
+function placeNumbersAndSymbolsAtCaret(bn){
+
+        exprDisplay.focus();
+        const curPos= exprDisplay.selectionStart;
+        console.log(curPos);
+        const displText= exprDisplay.value;  
+        const newText= displText.slice(0,curPos) + bn.textContent +displText.slice(curPos); 
+        exprDisplay.value=newText;
+        exprDisplay.selectionStart=curPos+1;
+        exprDisplay.selectionEnd=curPos+1; 
 
 
 }
 
-displayButtons.forEach((btn)=>{
-    btn.addEventListener('click', ()=>{
+function showExpressionsAndResults(btn){
 
     if(hasOperationEnded===true){
-        exprDisplay.textContent="";
-        answerDisplay.textContent="";
+        clearCalculator();
         hasOperationEnded=false;
     }
+
+    placeNumbersAndSymbolsAtCaret(btn);
         
+
        
-        exprDisplay.textContent+=btn.textContent;
+       //exprDisplay.value+=btn.textContent;
+      
         let nextSymbol="";
 
 
-        console.log(exprDisplay.textContent);
-        const displayValArray=getExpressionInDisplay();
+        console.log(exprDisplay.value);
+        let displayValArray=getExpressionInDisplay();
         console.log(displayValArray);
 
+        if(displayValArray.length===3){
+
+            if (displayValArray[0]==='+'){
+                displayValArray=[
+                       '0',
+                       ...displayValArray
+                   ];
+
+                      
+       
+                 
+               }
+
+
+        }
+
+
+       console.log(displayValArray); 
         
   
     if(displayValArray.length===4){
         try{
+
+            
 
            if(displayValArray[2]==='+' || displayValArray[2]==='-' || displayValArray[2]===divSymbol 
                         || displayValArray[2]===multSymbol){
@@ -205,12 +313,13 @@ displayButtons.forEach((btn)=>{
                
             }
 
+
             
     
             nextSymbol=displayValArray[3];
              const displayAnswer=getAnswer(displayValArray);
              answerDisplay.textContent=displayAnswer;
-             exprDisplay.textContent=displayAnswer+nextSymbol;
+             exprDisplay.value=displayAnswer+nextSymbol;
            
 
         }catch(error){
@@ -219,15 +328,81 @@ displayButtons.forEach((btn)=>{
         }
         
     
- }
+     }
 
        
 
    
 
 
+   }
+
+displayButtons.forEach((btn)=>{
+    btn.addEventListener('click', ()=>{
+
+        showExpressionsAndResults(btn);
 
     });
+
+});
+
+decimalButton.addEventListener('click', ()=>{
+    if(hasOperationEnded===true){
+        exprDisplay.value="";
+        answerDisplay.textContent="";
+        hasOperationEnded=false;
+    }
+   
+    const displayArray=getExpressionInDisplay();
+
+    const lastItemInArray=displayArray[displayArray.length-1];
+    console.log(lastItemInArray%1 === 0 );
+    console.log(!Number.isFinite(parseFloat(lastItemInArray)));
+
+    if(lastItemInArray%1 === 0 || !Number.isFinite(parseFloat(lastItemInArray))){
+        //exprDisplay.value+=decimalButton.textContent;
+        placeNumbersAndSymbolsAtCaret(decimalButton);
+
+    }
+
+});
+
+backspaceButton.addEventListener('click', ()=>{
+
+    let exprArrayInd=getExpressionInDisplay();
+
+    if(exprArrayInd.length!==0){
+        exprDisplay.focus();
+        const curPos= exprDisplay.selectionStart;
+        console.log(curPos);
+        const displText= exprDisplay.value; 
+        const newText= displText.slice(0,curPos-1)  +displText.slice(curPos); 
+        exprDisplay.value=newText;
+        /*exprDisplay.selectionStart=curPos+1;
+        exprDisplay.selectionEnd=curPos+1; */
+
+    /*const lastItemInDisplay=exprArrayInd[exprArrayInd.length-1];
+    //console.log(lastItemInDisplay);
+    console.log(lastItemInDisplay.split(""));
+    const lastItemDisplayArray=lastItemInDisplay.split("");
+
+    lastItemDisplayArray.splice(lastItemDisplayArray.length-1);
+    const newlastItemInDisplay=lastItemDisplayArray.join("");
+    //console.log(lastItemDisplayArray);
+
+   
+    exprArrayInd=[
+        ...exprArrayInd.slice(0, exprArrayInd.length-1),
+        newlastItemInDisplay
+    ];
+
+
+    exprDisplay.value=exprArrayInd.join("");*/
+}
+    
+
+  
+
 
 });
 
@@ -235,8 +410,7 @@ displayButtons.forEach((btn)=>{
 //To clear the display of the calculator
 
 clearButton.addEventListener('click', ()=>{
-    exprDisplay.textContent="";
-    answerDisplay.textContent="";
+  clearCalculator();
 
 });
 
@@ -252,6 +426,16 @@ equalButton.addEventListener('click', ()=>{
 
     try{
 
+        //if the first item in the expression is a  division or multiplication sign,
+        //a syntax error message will be displayed
+
+        if(finalExpression[0]===divSymbol 
+                     || finalExpression[0]===multSymbol){
+
+            throw 'Syntax Error';
+
+         }
+
         
 
      //if the last item in the expression is a sign, a syntax error message will be displayed       
@@ -262,6 +446,7 @@ equalButton.addEventListener('click', ()=>{
             throw 'Syntax Error';
 
          }
+         console.log(getAnswer(finalExpression));
             answerDisplay.textContent=getAnswer(finalExpression);
             hasOperationEnded=true;
        
@@ -278,6 +463,29 @@ equalButton.addEventListener('click', ()=>{
 
 
 });
+
+
+//to ensure that the only keys displayed on the calculator are numbers and arithmetic signs
+exprDisplay.addEventListener('keydown', function(event) {
+   
+  
+    if(!(/[0-9]/g.test(event.key) || /[\-+.]/g.test(event.key) || event.key==='Backspace' 
+                || event.key==='Delete' || event.key==='ArrowLeft' || event.key==='ArrowRight' ) ){
+
+       event.preventDefault();
+       
+    } 
+
+    if(event.key==='/'){
+        exprDisplay.value+=divSymbol;    // when the slash on the keyboard is pressed, the division sign is displayed 
+    }
+
+    if(event.key==='*'){
+        exprDisplay.value+=multSymbol;    // when the asterick on the keyboard is pressed, the multiplication sign is displayed 
+    }
+});
+
+
 
 
 
