@@ -372,16 +372,15 @@ backspaceButton.addEventListener('click', ()=>{
     let exprArrayInd=getExpressionInDisplay();
 
     if(exprArrayInd.length!==0){
-        exprDisplay.focus();
+        /*exprDisplay.focus();
         const curPos= exprDisplay.selectionStart;
         console.log(curPos);
         const displText= exprDisplay.value; 
         const newText= displText.slice(0,curPos-1)  +displText.slice(curPos); 
-        exprDisplay.value=newText;
-        /*exprDisplay.selectionStart=curPos+1;
-        exprDisplay.selectionEnd=curPos+1; */
+        exprDisplay.value=newText;*/
+      
 
-    /*const lastItemInDisplay=exprArrayInd[exprArrayInd.length-1];
+    const lastItemInDisplay=exprArrayInd[exprArrayInd.length-1];
     //console.log(lastItemInDisplay);
     console.log(lastItemInDisplay.split(""));
     const lastItemDisplayArray=lastItemInDisplay.split("");
@@ -397,7 +396,7 @@ backspaceButton.addEventListener('click', ()=>{
     ];
 
 
-    exprDisplay.value=exprArrayInd.join("");*/
+    exprDisplay.value=exprArrayInd.join("");
 }
     
 
