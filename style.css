@@ -2,18 +2,115 @@
     box-sizing: border-box;
 }
 
+html, body{
+    font-size: 62.5%;
+}
+
+body{
+    background: url(pexels-fwstudio-129731.jpg);
+}
+
+h1{
+    font-size: 3rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    
+
+}
+
+
 .calculator-container{
-    background: darkseagreen;
+    /*background: rgb(99, 114, 129);*/
+    background: rgb(158, 156, 156);
     /*padding: 10px;*/
     width: 30vw;
    /* height: 500px;*/
-   aspect-ratio: 3/4;
-    margin: 0 auto;
+   aspect-ratio: 12.2/16;
+   
+    /*border-radius: 10px 10px 120px 120px;*/
+    border-radius:  10% 10% 20% 20%;
+    
+    box-shadow: 0px 0px 2px 4px rgb(158, 156, 156);
+    position: absolute;
+    left: 50%;
+    top: 9%;
+ 
+    transform: translate(-50%);
+    border-bottom: 2px solid rgb(71, 71, 71);
+    /*border-left: 1px solid rgb(71, 71, 71);
+    border-right: 1px solid rgb(71, 71, 71);*/
+  
 }
+
+.outer-style-div{
+    position: absolute;
+    width: 34vw;
+    aspect-ratio: 4/5;
+    background: rgb(55, 73, 92);
+    
+    left: 50%;
+   
+    top: 5%;
+    transform: translate(-50%);
+    z-index: -1;
+    border-radius: 10% 10% 25% 25% ;
+    box-shadow: -13px -9px 6px 7px rgba(0,0,0,0.6);
+    border-bottom: 5px solid rgb(70, 90, 109);
+    border-right: 4px solid rgb(70, 90, 109);
+   /* border-top:7px solid rgb(51, 67, 85);
+    border-left: 5px solid rgb(51, 67, 85);*/
+   
+
+}
+
+/*.style-behind-calculator{
+    position: absolute;
+    width: 25%;
+    height: 40%;
+    background: lightcoral;
+    top: 14%;
+    z-index: 1;
+}*/
+
+.inner-calculator-container{
+    position: absolute;
+
+    width: 32vw;
+    aspect-ratio: 5/4;
+   
+    
+    top: 6%;
+    left: 50%;
+    
+    /*background: rgb(99, 114, 129);*/
+    background: rgb(158, 156, 156);;
+    z-index: -1;
+    border-radius: 20% 20% 100% 100%;
+   transform: translate(-50%);
+   box-shadow: 0px 0px 2px 2px rgb(158, 156, 156);
+   border-left: 2px solid rgb(71, 71, 71);
+   border-right: 2px solid rgb(71, 71, 71);
+   border-top: 2px solid rgb(71, 71, 71);
+}
+
 
 @media (max-width:299px ) {
     .calculator-container{
-        width: 95vw;
+        width: 88.2vw;
+        aspect-ratio: 12.5/16;
+    }
+
+    .outer-style-div{
+        width: 100vw;
+       
+
+    }
+
+    .inner-calculator-container{
+        width: 94.1vw;
+        
+        
     }
     
 }
@@ -21,7 +118,25 @@
 @media (min-width:300px ) and (max-width: 800px) {
     .calculator-container{
         width: 50vw;
+        aspect-ratio: 12.5/16;
     }
+    .outer-style-div{
+        width: 56.65vw;
+      
+      
+        
+    }
+
+    .inner-calculator-container{
+        width: 53.35vw;
+       
+        
+       
+    }
+
+
+
+    
     
 }
 
@@ -29,6 +144,17 @@
     .calculator-container{
         width: 40vw;
     }
+
+    .outer-style-div{
+        width: 45.32vw;
+        
+    }
+
+    .inner-calculator-container{
+        width: 42.68vw;
+       
+    }
+
 }
 
 
@@ -38,10 +164,11 @@
     align-items: center;
     justify-content: center;
     
-    background: cornflowerblue;
+    /*background: cornflowerblue;*/
     width: 90%;
     height: 30%;
-    margin: inherit;
+    margin: 0 auto;
+    
    
 }
 
@@ -51,59 +178,141 @@
 
     justify-content: space-between;
     
-   background: darkgray;
+   background: rgb(120, 158, 120);
    width: inherit;
-   height: 80%;
+   height: 100%;
+   margin-top: 6%; 
+   border: 3px solid rgb(55, 73, 92);
+   border-radius: 5px;
+   overflow: hidden;
+   box-shadow: inset 0px 0px 15px 2px rgba(0,0,0,0.6);
+   font-weight: 600;
+   
+  
 }
 
 #expr-display{
     
-    background: lawngreen;
+   /* background: lawngreen;*/
+   border: none;
+   background: transparent;
+   padding: 5%;
+   color: white;
+   font-size: 2.1rem;
+   font-family: 'Orbitron', sans-serif;
+   font-weight: 600;
+   
     
   
    
     
 }
 
+#expr-display:focus{
+    outline: none;
+}
+
 #answer-display{
     
-   background: lightpink;
+   /*background: lightpink;*/
    text-align: right;
+   padding: 5%;
+   color: white;
+   font-size: 2.1rem;
+   font-family: 'Orbitron', sans-serif;
+   font-weight: 900;
+   color: rgb(35, 54, 73);
 }
 
 #keypad-container{
     display: flex;
     justify-content: space-evenly;
-    background: khaki;
+    /*background: khaki;*/
     width: 90%;
     height: 60%;
-    margin: 10px auto;
+    margin: 10% auto 0; 
     /*padding: 10px;*/
+    
 }
 
 #numpad-container{
     display: grid;
-    grid-template-columns: 32.67% 32.67% 32.67%;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
-    gap: 1%;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    /*column-gap: 1%;
+   row-gap: 1%;*/
+   gap: 1%;
+    background: silver;
+    width: 50%;
+    height: 90%;
+    padding: 1%;
+    justify-items: center;
+    align-items: center;
+    border-radius: 5px;
     
-    background: royalblue;
-   width: 50%;
-    height: 100%;
 
 }
 
 #operators-container{
     display: grid;
-    grid-template-columns: 49.5% 49.5% ;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr) ;
+    grid-template-rows: repeat(4, 1fr);
+    /*column-gap: 1%;
+    row-gap: 1%;*/
     gap: 1%;
     width: 33.33%;
-     height: 75%;
-     background: salmon;
+     height: 90%;
+    background: silver;
+     padding: 1%;
+     justify-items: center;
+     align-items: center;
+     border-radius: 5px;
+
  
 
 
 }
 
+button{
+  /* border-top-left-radius: 20%;
+    border-top-right-radius: 20%;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;*/
+    border-radius: 25% 10%;
+    width: 90%;
+    height: 70%;
+    border: transparent;
+    background: rgb(105, 105, 105);
+    color: white;
+    box-shadow: -3px -3px 2px 1px rgba(0,0,0,0.6);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.7rem;
+    border-bottom: 3px solid rgba(58, 58, 58, 0.5);
+    border-right: 2px solid rgba(58, 58, 58, 0.3);
+}
+button:hover{
+    opacity: 0.8;
+    cursor: pointer;
+    
+}
+
+button:active{
+    border-bottom: transparent;
+    border-right: transparent;  
+    box-shadow: none;
+
+}
+
+.oper-button{
+    background: orangered;
+    /*border-bottom: 4px solid rgba(163, 47, 5, 0.8);*/
+    /*border-right: 2px solid rgba(163, 47, 5, 0.6);*/
+   
+
+}
+
+#equal-button, #clear-button, #backspace-button{
+    background: rgb(19, 19, 109);
+   
+}
 
