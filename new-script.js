@@ -241,19 +241,24 @@ function getExpressionInDisplay(){
         return newUpdExprArray;
 }
 
+
+//clears calculator display (expression and answer parts)
 function clearCalculator(){
     exprDisplay.value="";
     answerDisplay.textContent="";
 
 }
 
-function placeNumbersAndSymbolsAtCaret(bn){
+
+//puts numbers and symbols at the cursor (caret) location
+function placeNumbersAndSymbolsAtCaret(btxt){
+   
 
         exprDisplay.focus();
         const curPos= exprDisplay.selectionStart;
         console.log(curPos);
         const displText= exprDisplay.value;  
-        const newText= displText.slice(0,curPos) + bn.textContent +displText.slice(curPos); 
+        const newText= displText.slice(0,curPos) + btxt +displText.slice(curPos); 
         exprDisplay.value=newText;
         exprDisplay.selectionStart=curPos+1;
         exprDisplay.selectionEnd=curPos+1; 
@@ -261,18 +266,21 @@ function placeNumbersAndSymbolsAtCaret(bn){
 
 }
 
-function showExpressionsAndResults(btn){
+
+// displays all numbers and symbols entered in the calculator display
+// and also the result of each operation (a+b)
+function showExpressionsAndResults(btext){
 
     if(hasOperationEnded===true){
         clearCalculator();
         hasOperationEnded=false;
     }
 
-    placeNumbersAndSymbolsAtCaret(btn);
+    placeNumbersAndSymbolsAtCaret(btext);
         
 
        
-       //exprDisplay.value+=btn.textContent;
+      
       
         let nextSymbol="";
 
@@ -299,8 +307,8 @@ function showExpressionsAndResults(btn){
 
 
        console.log(displayValArray); 
+       
         
-  
     if(displayValArray.length===4){
         try{
 
@@ -340,13 +348,13 @@ function showExpressionsAndResults(btn){
 displayButtons.forEach((btn)=>{
     btn.addEventListener('click', ()=>{
 
-        showExpressionsAndResults(btn);
+        showExpressionsAndResults(btn.textContent);
 
     });
 
 });
 
-decimalButton.addEventListener('click', ()=>{
+function addDecimal(){
     if(hasOperationEnded===true){
         exprDisplay.value="";
         answerDisplay.textContent="";
@@ -361,9 +369,14 @@ decimalButton.addEventListener('click', ()=>{
 
     if(lastItemInArray%1 === 0 || !Number.isFinite(parseFloat(lastItemInArray))){
         //exprDisplay.value+=decimalButton.textContent;
-        placeNumbersAndSymbolsAtCaret(decimalButton);
+        placeNumbersAndSymbolsAtCaret(decimalButton.textContent);
 
     }
+}
+
+decimalButton.addEventListener('click', ()=>{
+    addDecimal();
+    
 
 });
 
@@ -382,23 +395,7 @@ backspaceButton.addEventListener('click', ()=>{
         exprDisplay.selectionEnd=curPos-1; 
       
 
-    /*const lastItemInDisplay=exprArrayInd[exprArrayInd.length-1];
-    //console.log(lastItemInDisplay);
-    console.log(lastItemInDisplay.split(""));
-    const lastItemDisplayArray=lastItemInDisplay.split("");
-
-    lastItemDisplayArray.splice(lastItemDisplayArray.length-1);
-    const newlastItemInDisplay=lastItemDisplayArray.join("");
-    //console.log(lastItemDisplayArray);
-
-   
-    exprArrayInd=[
-        ...exprArrayInd.slice(0, exprArrayInd.length-1),
-        newlastItemInDisplay
-    ];
-
-
-    exprDisplay.value=exprArrayInd.join("");*/
+    
 }
     
 
@@ -415,10 +412,9 @@ clearButton.addEventListener('click', ()=>{
 
 });
 
-//When the button equalButton is clicked,  the calculator display
-// will show the solution of the expression immediately 
+//to find and give the final solution of the current expression, thus ending the entire operation
 
-equalButton.addEventListener('click', ()=>{
+function findSolution(){
 
     const finalExpression=getExpressionInDisplay();
     console.log(finalExpression[finalExpression.length-1]);
@@ -463,26 +459,55 @@ equalButton.addEventListener('click', ()=>{
      
 
 
+}
+
+//When the button equalButton is clicked,  the calculator display
+// will show the solution of the expression immediately 
+
+equalButton.addEventListener('click', ()=>{
+
+    findSolution();
+  
+
 });
 
 
 //to ensure that the only keys displayed on the calculator are numbers and arithmetic signs
-exprDisplay.addEventListener('keydown', function(event) {
-   
+document.addEventListener('keydown', function(event) {
+    
+   exprDisplay.focus();
+   console.log(typeof(event.key));
   
-    if(!(/[0-9]/g.test(event.key) || /[\-+.]/g.test(event.key) || event.key==='Backspace' 
-                || event.key==='Delete' || event.key==='ArrowLeft' || event.key==='ArrowRight' ) ){
+    if(!( event.key==='Backspace' || event.key==='Delete' || event.key==='ArrowLeft' 
+                                                              || event.key==='ArrowRight') ){
 
        event.preventDefault();
        
     } 
 
+    //Making the digits and operator keys behvave like te buttons on the calculator
+
+   if((/[0-9]/g.test(event.key) || /[\-+]/g.test(event.key) )){
+        showExpressionsAndResults(event.key);
+    }
+
+    if (event.key==='.'){
+        addDecimal();
+
+    }
+
     if(event.key==='/'){
-        exprDisplay.value+=divSymbol;    // when the slash on the keyboard is pressed, the division sign is displayed 
+        showExpressionsAndResults(divideButton.textContent);   // when the slash on the keyboard is pressed, the division sign is displayed 
+        
     }
 
     if(event.key==='*'){
-        exprDisplay.value+=multSymbol;    // when the asterick on the keyboard is pressed, the multiplication sign is displayed 
+        showExpressionsAndResults(multiplyButton.textContent);   // when the asterick on the keyboard is pressed, the multiplication sign is displayed 
+        
+    }
+
+    if (event.key==='Enter'){
+        findSolution();
     }
 });
 
