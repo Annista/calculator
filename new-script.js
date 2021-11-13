@@ -114,7 +114,6 @@ function getAnswer(arr){
     const answer= operate(arr[0], symbol, arr[2]) ;
    
 
-    //return Math.round((answer + Number.EPSILON) * 100) / 100;
     return +(Math.round(answer + "e+2")  + "e-2");
    
 
@@ -179,7 +178,7 @@ function removeWhitespaces(arr){
 
         }
       }
-      console.log(newArr);
+
 
       return newArr;
      
@@ -206,14 +205,13 @@ function getExpressionInDisplay(){
 
     let exprArray=displayValue.split(symbRegex);
        
-        //console.log(displayValue);
-        console.log(exprArray);
+       
 
        
        
 
         let updExprArray=removeWhitespaces(exprArray);
-        console.log(updExprArray);
+        
 
         if (updExprArray[0]==='+'){
             updExprArray=[
@@ -233,10 +231,10 @@ function getExpressionInDisplay(){
    
              
            }
-           console.log(updExprArray);
+          
 
          const newUpdExprArray=findNegativeNumber(updExprArray);
-         console.log(newUpdExprArray);
+        
        
         return newUpdExprArray;
 }
@@ -256,12 +254,79 @@ function placeNumbersAndSymbolsAtCaret(btxt){
 
         exprDisplay.focus();
         const curPos= exprDisplay.selectionStart;
-        console.log(curPos);
         const displText= exprDisplay.value;  
         const newText= displText.slice(0,curPos) + btxt +displText.slice(curPos); 
         exprDisplay.value=newText;
         exprDisplay.selectionStart=curPos+1;
         exprDisplay.selectionEnd=curPos+1; 
+
+
+}
+
+//collects the current expression in the display. When a full operation is entered, it collects 
+//and displays the answer with the next operator 
+
+function evaluateExpression(){
+    let nextSymbol="";
+
+
+    
+    let displayValArray=getExpressionInDisplay();
+ 
+
+    if(displayValArray.length===3){
+
+        if (displayValArray[0]==='+'){
+            displayValArray=[
+                   '0',
+                   ...displayValArray
+               ];
+
+                  
+   
+             
+           }
+
+
+    }
+
+
+   
+   
+    
+if(displayValArray.length===4){
+    try{
+
+        
+
+       if(displayValArray[0]===divSymbol || displayValArray[0]===multSymbol || displayValArray[2]==='+' 
+                        || displayValArray[2]==='-' || displayValArray[2]===divSymbol 
+                                       || displayValArray[2]===multSymbol){
+            
+            throw 'Syntax Error';
+           
+        }
+
+
+        
+
+        nextSymbol=displayValArray[3];
+         const displayAnswer=getAnswer(displayValArray);
+         answerDisplay.textContent=displayAnswer;
+         exprDisplay.value=displayAnswer+nextSymbol;
+       
+
+    }catch(error){
+        answerDisplay.textContent=error;
+        hasOperationEnded=true;
+    }
+    
+
+ }
+
+   
+
+
 
 
 }
@@ -277,71 +342,13 @@ function showExpressionsAndResults(btext){
     }
 
     placeNumbersAndSymbolsAtCaret(btext);
+    evaluateExpression();
         
 
        
       
       
-        let nextSymbol="";
-
-
-        console.log(exprDisplay.value);
-        let displayValArray=getExpressionInDisplay();
-        console.log(displayValArray);
-
-        if(displayValArray.length===3){
-
-            if (displayValArray[0]==='+'){
-                displayValArray=[
-                       '0',
-                       ...displayValArray
-                   ];
-
-                      
        
-                 
-               }
-
-
-        }
-
-
-       console.log(displayValArray); 
-       
-        
-    if(displayValArray.length===4){
-        try{
-
-            
-
-           if(displayValArray[2]==='+' || displayValArray[2]==='-' || displayValArray[2]===divSymbol 
-                        || displayValArray[2]===multSymbol){
-                
-                throw 'Syntax Error';
-               
-            }
-
-
-            
-    
-            nextSymbol=displayValArray[3];
-             const displayAnswer=getAnswer(displayValArray);
-             answerDisplay.textContent=displayAnswer;
-             exprDisplay.value=displayAnswer+nextSymbol;
-           
-
-        }catch(error){
-            answerDisplay.textContent=error;
-            hasOperationEnded=true;
-        }
-        
-    
-     }
-
-       
-
-   
-
 
    }
 
@@ -368,7 +375,6 @@ function addDecimal(){
     console.log(!Number.isFinite(parseFloat(lastItemInArray)));
 
     if(lastItemInArray%1 === 0 || !Number.isFinite(parseFloat(lastItemInArray))){
-        //exprDisplay.value+=decimalButton.textContent;
         placeNumbersAndSymbolsAtCaret(decimalButton.textContent);
 
     }
@@ -381,6 +387,8 @@ decimalButton.addEventListener('click', ()=>{
 });
 
 backspaceButton.addEventListener('click', ()=>{
+    
+    //Removes a single item to the left of the cursor (caret)
 
     let exprArrayInd=getExpressionInDisplay();
 
@@ -412,12 +420,13 @@ clearButton.addEventListener('click', ()=>{
 
 });
 
+
 //to find and give the final solution of the current expression, thus ending the entire operation
 
 function findSolution(){
 
     const finalExpression=getExpressionInDisplay();
-    console.log(finalExpression[finalExpression.length-1]);
+    
 
    
 
@@ -443,7 +452,7 @@ function findSolution(){
             throw 'Syntax Error';
 
          }
-         console.log(getAnswer(finalExpression));
+         
             answerDisplay.textContent=getAnswer(finalExpression);
             hasOperationEnded=true;
        
@@ -472,7 +481,9 @@ equalButton.addEventListener('click', ()=>{
 });
 
 
-//to ensure that the only keys displayed on the calculator are numbers and arithmetic signs
+//keyboard support: to ensure that the only keys displayed on the calculator 
+//are numbers and arithmetic signs
+
 document.addEventListener('keydown', function(event) {
     
    exprDisplay.focus();
@@ -485,7 +496,7 @@ document.addEventListener('keydown', function(event) {
        
     } 
 
-    //Making the digits and operator keys behvave like te buttons on the calculator
+    //Making the digits and operator keys behvave like the buttons on the calculator
 
    if((/[0-9]/g.test(event.key) || /[\-+]/g.test(event.key) )){
         showExpressionsAndResults(event.key);
@@ -497,12 +508,16 @@ document.addEventListener('keydown', function(event) {
     }
 
     if(event.key==='/'){
-        showExpressionsAndResults(divideButton.textContent);   // when the slash on the keyboard is pressed, the division sign is displayed 
+        showExpressionsAndResults(divideButton.textContent);   
+
+        // when the slash on the keyboard is pressed, the division sign is displayed 
         
     }
 
     if(event.key==='*'){
-        showExpressionsAndResults(multiplyButton.textContent);   // when the asterick on the keyboard is pressed, the multiplication sign is displayed 
+        showExpressionsAndResults(multiplyButton.textContent);  
+
+         // when the asterick on the keyboard is pressed, the multiplication sign is displayed 
         
     }
 
