@@ -86,7 +86,7 @@ function operate(num1, operator, num2){
 //This function finds the solution to the expression passed to it (which is in the form of an array)
 
 function getAnswer(arr){
-
+   
 
     let symbol="";
     
@@ -107,9 +107,27 @@ function getAnswer(arr){
     }
 
     if(arr.length===1) {
+
+        if(Number.isFinite(parseFloat(arr[0]))){
         
-        return +(Math.round(arr[0] + "e+2")  + "e-2");
+            return +(Math.round(arr[0] + "e+2")  + "e-2");
+        }else{
+
+            throw 'Syntax Error!';
+
+            //if the only item in the array is an operator, an syntax error will be displayed
+
+        }
     }
+
+
+    //if the first item or third item in the array is an operator, a syntax error message will be displayed
+
+    if(!Number.isFinite(parseFloat(arr[0])) || !Number.isFinite(parseFloat(arr[2])) ){
+        throw 'Syntax Error!';
+
+    }
+
 
     const answer= operate(arr[0], symbol, arr[2]) ;
    
@@ -185,6 +203,30 @@ function removeWhitespaces(arr){
 
 
     }
+
+    function findSingleDecimal(arr){
+
+       
+
+        const ind= arr.findIndex(item=>(item==='.'));
+        if (ind===-1){
+            
+            return arr;
+        }
+        
+        
+            const nArr=[
+                 ...arr.slice(0, ind),
+                 '0.0',
+                 ...arr.slice(ind+1)
+             ]
+         
+             
+            
+        return findSingleDecimal(nArr);
+
+        
+    }
   
 
    
@@ -212,6 +254,7 @@ function getExpressionInDisplay(){
 
         let updExprArray=removeWhitespaces(exprArray);
         
+        
 
         if (updExprArray[0]==='+'){
             updExprArray=[
@@ -219,6 +262,8 @@ function getExpressionInDisplay(){
                    ...updExprArray.slice(2)
                ];
             }
+
+            
    
 
         
@@ -231,9 +276,14 @@ function getExpressionInDisplay(){
    
              
            }
+
+           updExprArray=findSingleDecimal(updExprArray);
+           
           
 
          const newUpdExprArray=findNegativeNumber(updExprArray);
+
+         
         
        
         return newUpdExprArray;
@@ -268,12 +318,9 @@ function placeNumbersAndSymbolsAtCaret(btxt){
 
 function evaluateExpression(){
     let nextSymbol="";
-
-
     
     let displayValArray=getExpressionInDisplay();
- 
-
+    
     if(displayValArray.length===3){
 
         if (displayValArray[0]==='+'){
@@ -296,17 +343,6 @@ function evaluateExpression(){
     
 if(displayValArray.length===4){
     try{
-
-        
-
-       if(displayValArray[0]===divSymbol || displayValArray[0]===multSymbol || displayValArray[2]==='+' 
-                        || displayValArray[2]==='-' || displayValArray[2]===divSymbol 
-                                       || displayValArray[2]===multSymbol){
-            
-            throw 'Syntax Error';
-           
-        }
-
 
         
 
@@ -342,12 +378,7 @@ function showExpressionsAndResults(btext){
     }
 
     placeNumbersAndSymbolsAtCaret(btext);
-    evaluateExpression();
-        
-
-       
-      
-      
+    evaluateExpression();   
        
 
    }
@@ -371,8 +402,7 @@ function addDecimal(){
     const displayArray=getExpressionInDisplay();
 
     const lastItemInArray=displayArray[displayArray.length-1];
-    console.log(lastItemInArray%1 === 0 );
-    console.log(!Number.isFinite(parseFloat(lastItemInArray)));
+    
 
     if(lastItemInArray%1 === 0 || !Number.isFinite(parseFloat(lastItemInArray))){
         placeNumbersAndSymbolsAtCaret(decimalButton.textContent);
@@ -427,33 +457,19 @@ function findSolution(){
 
     const finalExpression=getExpressionInDisplay();
     
+    
 
    
 
     try{
 
-        //if the first item in the expression is a  division or multiplication sign,
-        //a syntax error message will be displayed
-
-        if(finalExpression[0]===divSymbol 
-                     || finalExpression[0]===multSymbol){
-
-            throw 'Syntax Error';
-
-         }
-
-        
-
-     //if the last item in the expression is a sign, a syntax error message will be displayed       
-     if(finalExpression[finalExpression.length-1]==='+' || finalExpression[finalExpression.length-1]==='-'
-                || finalExpression[finalExpression.length-1]===divSymbol 
-                     || finalExpression[finalExpression.length-1]===multSymbol){
-
-            throw 'Syntax Error';
-
-         }
-         
+      
+   
             answerDisplay.textContent=getAnswer(finalExpression);
+
+      
+         
+            
             hasOperationEnded=true;
        
 
@@ -487,7 +503,7 @@ equalButton.addEventListener('click', ()=>{
 document.addEventListener('keydown', function(event) {
     
    exprDisplay.focus();
-   console.log(typeof(event.key));
+  
   
     if(!( event.key==='Backspace' || event.key==='Delete' || event.key==='ArrowLeft' 
                                                               || event.key==='ArrowRight') ){
